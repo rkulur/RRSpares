@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: "Poppins", sans-serif;
+  }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #fedec4;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #fb923c;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #e69500;
+}
+
+body {
+  @apply bg-[#F8F8F8];
+}
+
+/* Utility classes */
+
+.btn {
+  @apply bg-blue-700 text-white px-4 py-2 hover:bg-orange-400 transition-all duration-300;
+}
+
+.carouselHeight {
+  @apply h-[43.75rem];
+}
+
+.overlayIcons {
+  @apply h-12 w-12 border-2 border-orange-400 hover:border-blue-800 hover:bg-blue-800 hover:text-white p-3 transition-all cursor-pointer bg-[#F8F8F8];
+}
+
+.clickable {
+  @apply hover:text-orange-400 cursor-pointer select-none active:text-blue-800;
+}
+
+/*  */
+
+.nav {
+  @apply flex flex-col items-center justify-center;
+}
+
+.defWidth {
+  @apply min-w-[72rem] max-w-[80rem];
+}
+
+.centered {
+  @apply flex flex-col items-center justify-center hover:text-orange-500 cursor-pointer transition ease-in-out;
+}
+
+header svg {
+  scale: 1.25;
+}
+
+header input {
+  @apply focus:outline-none focus:border-orange-400;
+}
+
+.navlinks > li {
+  @apply hover:text-orange-400 transition ease-in-out flex items-center cursor-pointer;
+}
+
+.shop > ul > h2 {
+  @apply font-bold text-2xl border-b-2;
+}
+
+.shop > ul > h2,
+li {
+  @apply hover:text-orange-400 transition ease-in-out select-none;
+}
+
+.shop > ul > li {
+  @apply list-none px-1 py-2 font-semibold hover:text-orange-400  cursor-pointer;
+}
+
+.advertisement {
+  @apply relative before:absolute before:h-full before:w-full bg-cover before:-z-10;
+}
+
+footer .list li {
+  @apply py-2 hover:text-orange-400;
+}
+
+.grids > div {
+  @apply px-5;
+}
