@@ -96,3 +96,7 @@ footer .list li {
 .grids > div {
   @apply px-5;
 }
+
+.sheesh{
+  @apply bg-red-500
+}
