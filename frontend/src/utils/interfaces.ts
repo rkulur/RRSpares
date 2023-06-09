@@ -58,6 +58,7 @@ export interface ResType {
   message: string;
 }
 
+
 export interface PersonalInformationType {
   firstName: string;
   lastName: string;
@@ -84,3 +85,13 @@ export interface BrandType {
   _id : string;
 }
 
+
+export interface BrandResType extends ResType{
+  brand : BrandType;
+}
+
+
+export type StateWithIdxType = {
+  idx: number | null;
+  state: boolean;
+};

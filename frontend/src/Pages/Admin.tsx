@@ -9,6 +9,7 @@ import { useAuthCookie } from "../hooks/useAuthCookie";
 import Loading from "../components/Loading";
 import { useCheckAdmin } from "../Context/CheckIfAdminContext";
 import { GetRoleType } from "../components/Home/Header";
+import TriggerListEditedProvider from "../Context/TriggerListEditedContext";
 
 export default function Admin() {
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +46,9 @@ export default function Admin() {
           <Navbar />
           <DropDownContextProvider>
             <PaginationProvider>
-              <Outlet />
+              <TriggerListEditedProvider>
+                <Outlet />
+              </TriggerListEditedProvider>
             </PaginationProvider>
           </DropDownContextProvider>
           <Footer />

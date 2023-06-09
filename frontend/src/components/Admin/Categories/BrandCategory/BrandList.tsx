@@ -1,34 +1,42 @@
-import React, { useEffect, useRef, useState } from "react";
-import { BrandType } from "../../../../utils/interfaces";
-import { CheckCircleIcon, EllipsisVerticalIcon, PencilIcon, TrashIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import React, { SetStateAction, Dispatch, useEffect, useRef, useState } from "react";
+import { BrandType, ResType } from "../../../../utils/interfaces";
+import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import BrandEditList from "./BrandEditList";
+import { StateWithIdxType } from "../../../../utils/interfaces";
+import axios, { AxiosResponse } from "axios";
 
 interface BrandListProps {
   brands: BrandType[];
   head: string[];
+  setBrandDeleted: Dispatch<SetStateAction<boolean>>,
+  setTriggerLoader: Dispatch<SetStateAction<boolean>>,
 }
 
-type TriggerMenuType = {
-  idx: number | null;
-  state: boolean;
-};
-
-export default function BrandList({ brands, head }: BrandListProps) {
-  const [triggerMenu, setTriggerMenu] = useState<TriggerMenuType>({
+export default function BrandList({ brands, head, setBrandDeleted,setTriggerLoader }: BrandListProps) {
+  const [triggerMenu, setTriggerMenu] = useState<StateWithIdxType>({
     idx: null,
     state: false,
   });
 
-  const [enableEdit, setEnableEdit] = useState<TriggerMenuType>({
+  const [enableEdit, setEnableEdit] = useState<StateWithIdxType>({
     idx: null,
     state: false,
   });
 
-  function handleEditBrand(idx: number) {
-    setEnableEdit({idx,state: true});
+  function handleTriggerEdit(idx:number){
+    setEnableEdit({
+      idx,
+      state: true
+    })
   }
 
-  function handleDeleteBrand(e: React.MouseEvent<HTMLDivElement>) {
-    console.log("delete");
+  async function handleDeleteBrand(brandId: string) {
+    setTriggerLoader(true);
+    const res = await axios.delete<ResType,AxiosResponse<ResType>>(`${import.meta.env.VITE_SERVER_URL}/categories/brand/${brandId}`, { withCredentials: true });
+    if(res.data.success){
+      setBrandDeleted(true);
+      setTriggerLoader(false)
+    }
   }
 
   const listFunctionality = useRef<HTMLDivElement>(null);
@@ -43,12 +51,11 @@ export default function BrandList({ brands, head }: BrandListProps) {
         });
       }
     }
-
     document.addEventListener("mousedown", handleListFunctionality);
     return () => {
       document.removeEventListener("mousedown", handleListFunctionality);
     };
-  }, []);
+  }, [enableEdit]);
 
   return (
     <div className={` mt-5`}>
@@ -74,45 +81,10 @@ export default function BrandList({ brands, head }: BrandListProps) {
             }}
           >
             {enableEdit.state && enableEdit.idx === idx ? (
-              <>
-                <div className="flex flex-col items-center justify-center">
-                  <input
-                    className="h-16 w-16 text-[.5rem] border border-blue-800 outline-blue-800 rounded-full"
-                    type="file"
-                    accept="image/*"
-                  ></input>
-                </div>
-                <p
-                  className="h-16 flex items-center justify-center border border-blue-800 outline-blue-800 rounded-sm"
-                  contentEditable
-                  suppressContentEditableWarning
-                >
-                  {brand.name}
-                </p>
-                <p
-                  className="h-16 border border-blue-800 outline-blue-800 overflow-auto custom-scrollbar rounded-sm"
-                  contentEditable
-                  suppressContentEditableWarning
-                >
-                  {brand.description}
-                </p>
-                <p
-                  className="h-16 flex items-center justify-center border border-blue-800 outline-blue-800 rounded-sm"
-                  contentEditable
-                  suppressContentEditableWarning
-                >
-                  {brand.countryOfOrigin}
-                </p>
-                <div className="">
-                  <CheckCircleIcon className="h-8 w-8 text-green-500 active:scale-[.95]" />
-                  <XCircleIcon
-                  onClick={() => {
-                    setEnableEdit({idx : null,state : false})
-                  }} 
-                  className="h-8 w-8 text-red-500 active:scale-[.95]" />
-                </div>
-              </>
+              // Edit
+              <BrandEditList brand={brand} setEnableEdit={setEnableEdit} setTriggerLoader={setTriggerLoader}/>
             ) : (
+              // List
               <>
                 <img className="h-16 w-16 object-contain rounded-full" src={brand.logo}></img>
                 <p>{brand.name}</p>
@@ -129,7 +101,7 @@ export default function BrandList({ brands, head }: BrandListProps) {
                   }}
                   className="relative"
                 >
-                  <EllipsisVerticalIcon className="h-6 w-6" />
+                  <EllipsisVerticalIcon className="h-6 w-6 cursor-pointer " />
                   {triggerMenu.state && triggerMenu.idx === idx && (
                     <div
                       ref={listFunctionality}
@@ -138,7 +110,7 @@ export default function BrandList({ brands, head }: BrandListProps) {
                       <div
                         className="flex px-2 py-2 hover:bg-slate-200 active:bg-slate-300 items-center cursor-pointer border-b-2"
                         onClick={() => {
-                          handleEditBrand(idx);
+                          handleTriggerEdit(idx);
                         }}
                       >
                         <PencilIcon className="h-6 w-6 text-green-500" />
@@ -146,9 +118,13 @@ export default function BrandList({ brands, head }: BrandListProps) {
                       </div>
                       <div
                         className="flex px-2 py- hover:bg-slate-200 active:bg-slate-300 items-center cursor-pointer"
-                        onClick={handleDeleteBrand}
+                        onClick={()=>{
+                          handleDeleteBrand(brand._id)
+                        }}
                       >
-                        <TrashIcon className="h-6 w-6 text-red-500" />
+                        <TrashIcon
+                          className="h-6 w-6 text-red-500"
+                        />
                         <span className=" ml-2">Delete</span>
                       </div>
                     </div>
