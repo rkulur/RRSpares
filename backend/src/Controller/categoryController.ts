@@ -22,6 +22,7 @@ export const addBrand = async (req: Request, res: Response) => {
 		}
 
 		const searchBrand = await BrandModel.find({ name }); // returns array
+		console.log(searchBrand.entries())
 		const brandPresent = searchBrand.length >= 1;
 		if (brandPresent) {
 			return errorHandler(res, 404, "Brand is already present");
@@ -83,8 +84,6 @@ export const editBrand = async (req: Request, res: Response) => {
 		let isLogoMatched = false;
 		if (logo) {
 			isLogoMatched = await compareCloudFile(logo, brand.logo);
-		} else {
-			return errorHandler(res, 404, "Logo is required");
 		}
 
 		const isDataMatching =
@@ -94,7 +93,6 @@ export const editBrand = async (req: Request, res: Response) => {
 			isLogoMatched;
 
 		if (isDataMatching) {
-			fs.unlinkSync(logo.path); // remove image from /uploads
 			return successHandler(res, 200, "Brand updated successfully!", { brand });
 		}
 
@@ -106,9 +104,15 @@ export const editBrand = async (req: Request, res: Response) => {
 		} = { name, description, countryOfOrigin };
 
 		// Updating the logo in cloud
-		if (!isLogoMatched) {
+		if (!isLogoMatched && logo) {
 			const uploadOptions = cloudUploadOptions(`brands/${logo.filename}`, logo.mimetype);
-			const { fileSrc, isDeleted } = await updateCloudFile(res, logo, bucket, uploadOptions);
+			const { fileSrc, isDeleted } = await updateCloudFile(
+				res,
+				logo,
+				brand.logo,
+				bucket,
+				uploadOptions
+			);
 			if (!isDeleted) {
 				return errorHandler(res, 500, "An error occurred while attempting to edit the brand", {
 					oldLogoDeleted: false,

@@ -50,7 +50,7 @@ async function compareCloudFile(reqFile: Express.Multer.File, compareFilePath: s
 			}
 			resolve(true);
 		} catch (error) {
-			reject(error);
+			resolve(false);
 		}
 	});
 }
@@ -72,9 +72,9 @@ async function deleteCloudFile(filePath: string, bucket: Bucket) {
 	});
 }
 
-async function updateCloudFile(res: Response, file: Express.Multer.File, bucket: Bucket, uploadOptions: UploadOptions) {
+async function updateCloudFile(res: Response, file: Express.Multer.File,filePathInStorage : string, bucket: Bucket, uploadOptions: UploadOptions) {
 	const fileSrc = await uploadFileToCloud(res, file, bucket, uploadOptions);
-	const isDeleted = await deleteCloudFile(file.path, bucket);
+	const isDeleted = await deleteCloudFile(filePathInStorage, bucket);
 	return {
 		fileSrc,
 		isDeleted,
