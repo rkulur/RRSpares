@@ -1,8 +1,10 @@
 import React, { ChangeEvent, useRef, useState } from "react";
 import { BrandType, StateWithIdxType, ResType } from "../../../../utils/interfaces";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { useTriggerEditContext } from "../../../../Context/TriggerListEditedContext";
+import { useAlert } from "../../../../Context/AlertContext";
+import { stepLabelClasses } from "@mui/material";
 
 interface BrandEditListProps {
   brand: BrandType;
@@ -11,13 +13,15 @@ interface BrandEditListProps {
 }
 
 export default function BrandEditList({ brand, setEnableEdit, setTriggerLoader }: BrandEditListProps) {
-  const setTriggerEdit = useTriggerEditContext()!.setTriggerEdit;
+  const setBrandEdited = useTriggerEditContext()!.setBrandEdited;
 
   const [logoImgToEdit, setLogoImgToEdit] = useState<File | undefined>(undefined);
   const logoRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLParagraphElement>(null);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const countryOfOriginRef = useRef<HTMLParagraphElement>(null);
+
+  const setAlert = useAlert()!.setAlert;
 
   function disableEdit() {
     setEnableEdit({ idx: null, state: false });
@@ -46,22 +50,39 @@ export default function BrandEditList({ brand, setEnableEdit, setTriggerLoader }
     editFormData.append("description", description);
     editFormData.append("countryOfOrigin", countryOfOrigin);
 
-    const res = await axios.put<ResType, AxiosResponse<ResType>>(
-      `${import.meta.env.VITE_SERVER_URL}/categories/brand/${brandId}`,
-      editFormData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-      }
-    );
-
-    if (res.data.success) {
-      setTriggerEdit(true);
-      disableEdit();
-      setTriggerLoader(false);
-    }
+    axios
+      .put<ResType, AxiosResponse<ResType>>(
+        `${import.meta.env.VITE_SERVER_URL}/categories/brand/${brandId}`,
+        editFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        if (res.data.success) {
+          setBrandEdited(true);
+          disableEdit();
+          setTriggerLoader(false);
+          setAlert({
+            state: true,
+            type: "success",
+            message: res.data.message,
+          });
+        }
+      })
+      .catch((err: AxiosError<ResType>) => {
+        setTriggerLoader(false);
+        if (err.response?.data) {
+          setAlert({
+            state: true,
+            type: "error",
+            message: err.response?.data.message,
+          });
+        }
+      });
   }
 
   function handleCancel() {
@@ -120,16 +141,14 @@ export default function BrandEditList({ brand, setEnableEdit, setTriggerLoader }
       </p>
       <div className="">
         <button
-        className="rounded-full outline-green-600 active:scale-[.95]"
+          className="rounded-full outline-green-600 active:scale-[.95]"
           onClick={() => {
             handleEdit(brand._id);
           }}
         >
           <CheckCircleIcon className="h-8 w-8 text-green-500" />
         </button>
-        <button
-        className="rounded-full outline-red-700  active:scale-[.95]" 
-        onClick={handleCancel}>
+        <button className="rounded-full outline-red-700  active:scale-[.95]" onClick={handleCancel}>
           <XCircleIcon className="h-8 w-8 text-red-500" />
         </button>
       </div>

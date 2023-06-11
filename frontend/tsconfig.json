@@ -19,6 +19,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "src/components/Admin/Categories/BrandCategory/BrandEditList.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

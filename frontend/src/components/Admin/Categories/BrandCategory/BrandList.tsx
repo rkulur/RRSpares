@@ -3,16 +3,17 @@ import { BrandType, ResType } from "../../../../utils/interfaces";
 import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import BrandEditList from "./BrandEditList";
 import { StateWithIdxType } from "../../../../utils/interfaces";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { useAlert } from "../../../../Context/AlertContext";
 
 interface BrandListProps {
   brands: BrandType[];
   head: string[];
-  setBrandDeleted: Dispatch<SetStateAction<boolean>>,
-  setTriggerLoader: Dispatch<SetStateAction<boolean>>,
+  setBrandDeleted: Dispatch<SetStateAction<boolean>>;
+  setTriggerLoader: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function BrandList({ brands, head, setBrandDeleted,setTriggerLoader }: BrandListProps) {
+export default function BrandList({ brands, head, setBrandDeleted, setTriggerLoader }: BrandListProps) {
   const [triggerMenu, setTriggerMenu] = useState<StateWithIdxType>({
     idx: null,
     state: false,
@@ -23,19 +24,47 @@ export default function BrandList({ brands, head, setBrandDeleted,setTriggerLoad
     state: false,
   });
 
-  function handleTriggerEdit(idx:number){
+  const setAlert = useAlert()!.setAlert;
+
+  function handleTriggerEdit(idx: number) {
     setEnableEdit({
       idx,
-      state: true
-    })
+      state: true,
+    });
   }
 
   async function handleDeleteBrand(brandId: string) {
     setTriggerLoader(true);
-    const res = await axios.delete<ResType,AxiosResponse<ResType>>(`${import.meta.env.VITE_SERVER_URL}/categories/brand/${brandId}`, { withCredentials: true });
-    if(res.data.success){
-      setBrandDeleted(true);
-      setTriggerLoader(false)
+    try {
+      const res = await axios.delete<ResType, AxiosResponse<ResType>>(
+        `${import.meta.env.VITE_SERVER_URL}/categories/brand/${brandId}`,
+        { withCredentials: true }
+      );
+      if (res.data.success) {
+        setBrandDeleted(true);
+        setTriggerLoader(false);
+        setAlert({
+          state: true,
+          type: "success",
+          message: res.data.message,
+        });
+      }
+    } catch (error: AxiosError<ResType> | unknown) {
+      setTriggerLoader(false);
+      const err = error as AxiosError<ResType>;
+      if (err.response) {
+        setAlert({
+          state: true,
+          type: "error",
+          message: err.response.data.message,
+        });
+        return;
+      }
+      setAlert({
+        state: true,
+        type: "error",
+        message: err.message,
+      });
     }
   }
 
@@ -82,12 +111,12 @@ export default function BrandList({ brands, head, setBrandDeleted,setTriggerLoad
           >
             {enableEdit.state && enableEdit.idx === idx ? (
               // Edit
-              <BrandEditList brand={brand} setEnableEdit={setEnableEdit} setTriggerLoader={setTriggerLoader}/>
+              <BrandEditList brand={brand} setEnableEdit={setEnableEdit} setTriggerLoader={setTriggerLoader} />
             ) : (
               // List
               <>
                 <img className="h-16 w-16 object-contain rounded-full" src={brand.logo}></img>
-                <p>{brand.name}</p>
+                <p className="px-3">{brand.name}</p>
                 <p className="">{brand.description}</p>
                 <p className="text-center">{brand.countryOfOrigin}</p>
                 <div
@@ -118,13 +147,11 @@ export default function BrandList({ brands, head, setBrandDeleted,setTriggerLoad
                       </div>
                       <div
                         className="flex px-2 py- hover:bg-slate-200 active:bg-slate-300 items-center cursor-pointer"
-                        onClick={()=>{
-                          handleDeleteBrand(brand._id)
+                        onClick={() => {
+                          handleDeleteBrand(brand._id);
                         }}
                       >
-                        <TrashIcon
-                          className="h-6 w-6 text-red-500"
-                        />
+                        <TrashIcon className="h-6 w-6 text-red-500" />
                         <span className=" ml-2">Delete</span>
                       </div>
                     </div>

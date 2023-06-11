@@ -8,6 +8,7 @@ import Reset from "./Pages/Reset";
 import ResetPassword from "./Pages/ResetPassword";
 import Admin from "./Pages/Admin";
 import { Dashboard, BrandCategory, Users } from "./components/Admin";
+import ModelCategory from "./components/Admin/Categories/ModelCategory";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
               <Route path="users" element={<Users />} />
               <Route path="categories">
                 <Route path="brand" element={<BrandCategory />} />
+                <Route path="model" element={<ModelCategory/>} />
               </Route>
             </Route>
           </Route>

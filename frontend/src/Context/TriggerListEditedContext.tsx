@@ -2,17 +2,17 @@ import { useContext, useState, createContext, Dispatch, SetStateAction } from "r
 import { ChildrenType } from "../utils/interfaces";
 
 type TriggerListEditedContextType = {
-  triggerEdit: boolean;
-  setTriggerEdit: Dispatch<SetStateAction<boolean>>;
+  brandEdited: boolean;
+  setBrandEdited: Dispatch<SetStateAction<boolean>>;
 };
 
 const TriggerListEditedContext = createContext<TriggerListEditedContextType | undefined>(undefined);
 
 export default function TriggerListEditedProvider({ children }: ChildrenType) {
-  const [triggerEdit, setTriggerEdit] = useState(false);
+  const [brandEdited, setBrandEdited] = useState(false);
 
   return (
-    <TriggerListEditedContext.Provider value={{ triggerEdit, setTriggerEdit }}>
+    <TriggerListEditedContext.Provider value={{ brandEdited, setBrandEdited }}>
       {children}
     </TriggerListEditedContext.Provider>
   );

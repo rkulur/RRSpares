@@ -1,46 +1,45 @@
-import {Dispatch,SetStateAction} from 'react';
+import { Dispatch, SetStateAction } from "react";
 
-
-export interface MenuProps{
-  setIsMenuVisible : Dispatch<SetStateAction<boolean>>
+export interface MenuProps {
+  setIsMenuVisible: Dispatch<SetStateAction<boolean>>;
 }
 
 export type RecentOrders = [
   {
-    orderId : string,
-    productName : string, 
-    units : string, 
-    orderDate : Date,
-    orderCost : string, 
-    status : 'Processing' | 'Delivered' | 'Cancelled', 
+    orderId: string;
+    productName: string;
+    units: string;
+    orderDate: Date;
+    orderCost: string;
+    status: "Processing" | "Delivered" | "Cancelled";
   }
-]
+];
 
 export type newCustomers = {
-  imgSrc : string,
-  name : string,
-  noOfOrders : string,
-  amount : string,
-}
+  imgSrc: string;
+  name: string;
+  noOfOrders: string;
+  amount: string;
+};
 
 export type topProducts = {
-  imgSrc : string,
-  title : string,
-  description : string,
-  price : string,
-  oldPrice : string,
-  noOfSales : string
-}
+  imgSrc: string;
+  title: string;
+  description: string;
+  price: string;
+  oldPrice: string;
+  noOfSales: string;
+};
 
 export type userList = {
-  profileImgSrc : string,
-  name : string,
-  email : string,
-  phone : string,
-  totalBuy : string,
-  status : 'active' | 'inactive',
-  joinOn : Date,
-}
+  profileImgSrc: string;
+  name: string;
+  email: string;
+  phone: string;
+  totalBuy: string;
+  status: "active" | "inactive";
+  joinOn: Date;
+};
 
 export interface DropDownOption {
   value: string;
@@ -58,7 +57,6 @@ export interface ResType {
   message: string;
 }
 
-
 export interface PersonalInformationType {
   firstName: string;
   lastName: string;
@@ -69,29 +67,32 @@ export interface EmailType {
 }
 
 export interface UserDetailsType extends ResType {
-  userDetails : PersonalInformationType & EmailType
-
+  userDetails: PersonalInformationType & EmailType;
 }
 
 export interface ChildrenType {
-  children : React.ReactNode
+  children: React.ReactNode;
 }
 
 export interface BrandType {
   name: string;
-  logo: string,
+  logo: string;
   description: string;
   countryOfOrigin: string;
-  _id : string;
+  _id: string;
 }
 
-
-export interface BrandResType extends ResType{
-  brand : BrandType;
+export interface BrandResType extends ResType {
+  brand: BrandType;
 }
-
 
 export type StateWithIdxType = {
   idx: number | null;
   state: boolean;
 };
+
+export interface Alert {
+  state: boolean;
+  type: "success" | "error";
+  message: string;
+}

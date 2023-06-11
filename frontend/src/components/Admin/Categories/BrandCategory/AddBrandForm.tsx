@@ -1,5 +1,7 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import React, { Dispatch, SetStateAction, ChangeEvent, FormEvent, useRef, useState } from "react";
+import { Alert, ResType } from "../../../../utils/interfaces";
+import { useAlert } from "../../../../Context/AlertContext";
 
 type AddBrandFormProps = {
   setBrandAdded: Dispatch<SetStateAction<boolean>>;
@@ -12,6 +14,7 @@ export default function AddBrandForm({ setBrandAdded, setTriggerLoader }: AddBra
   const description = useRef<HTMLTextAreaElement>(null);
   const countryOfOrigin = useRef<HTMLInputElement>(null);
   const logo = useRef<HTMLInputElement>(null);
+  const { alert, setAlert } = useAlert()!;
 
   function handleAcceptImage(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -32,23 +35,39 @@ export default function AddBrandForm({ setBrandAdded, setTriggerLoader }: AddBra
     formData.append("description", description.current?.value!);
     formData.append("countryOfOrigin", countryOfOrigin.current?.value!);
 
+    name.current && (name.current.value = "");
+    description.current && (description.current.value = "");
+    countryOfOrigin.current && (countryOfOrigin.current.value = "");
+    logo.current && (logo.current.value = "");
+    setSelectedImg(null)
+
     axios
-      .post(`${import.meta.env.VITE_SERVER_URL}/categories/brand`, formData, {
+      .post<ResType, AxiosResponse<ResType>>(`${import.meta.env.VITE_SERVER_URL}/categories/brand`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
       })
-      .then(() => {
-        name.current && (name.current.value = "");
-        description.current && (description.current.value = "");
-        countryOfOrigin.current && (countryOfOrigin.current.value = "");
-        logo.current && (logo.current.value = "");
+      .then((res) => {
+        console.log(res.data.message);
         setSelectedImg(null);
         setBrandAdded(true);
         setTriggerLoader(false);
+        setAlert({
+          state: true,
+          type: "success",
+          message: res.data.message,
+        });
       })
-      .catch((err) => console.log(err));
+      .catch((err: AxiosError<ResType>) => {
+        console.log(err);
+        setTriggerLoader(false);
+        setAlert({
+          state: true,
+          type: "error",
+          message: err.response?.data.message || "Something went wrong! Please try again",
+        });
+      });
   }
 
   return (

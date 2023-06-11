@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-// import footer from 
+// import footer from
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -8,7 +8,7 @@ export default {
         "left-image": "url('/src/assets/images/Advertisement/left.webp')",
         "right-image": "url('/src/assets/images/Advertisement/right.webp')",
         "center-image": "url('/src/assets/images/Advertisement/center.webp')",
-        "footer": "url('/src/assets/images/footer/footer-bg.webp')",
+        footer: "url('/src/assets/images/footer/footer-bg.webp')",
       },
       keyframes: {
         slideIn: {
@@ -43,6 +43,18 @@ export default {
           from: { transform: "translateX(400%)" },
           to: { transform: "translateX(-100%)" },
         },
+        fromTopToBottom: {
+          from: { display: "none", transform: "translateY(-300%)" },
+          to: { display: "block", transform: "translateY(0)" },
+        },
+        fromBottomToTop: {
+          from: { transform: "translateY(0)" },
+          to: { transform: "translateY(-300%)" },
+        },
+        fromFulltoEmpty: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-100%)" },
+        },
       },
       animation: {
         "slide-menu": "slideIn 300ms ease",
@@ -52,6 +64,12 @@ export default {
         "fade-in-out": "fadeInOut 300ms ease-in-out",
         "hover-slider-on": "slideLeftToRight 300ms ease-in",
         "hover-slider-off": "slideRightToLeft 300ms ease-out",
+        "notification-on": "fromTopToBottom 500ms cubic-bezier(0.68, 0, 0.265, 1.35)",
+        "notification-off": "fromBottomToTop 500ms cubic-bezier(0.68, 0, 0.265, 1.35)",
+        "notification-off-slider": "fromFulltoEmpty 3100ms linear",
+      },
+      transitionTimingFunction: {
+        cubic: "cubic-bezier(0.68, 0, 0.265, 1.35)",
       },
     },
   },

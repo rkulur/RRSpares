@@ -53,7 +53,11 @@ body {
 }
 
 .defWidth {
-  @apply min-w-[72rem] max-w-[80rem];
+  @apply w-[72rem];
+}
+
+.defWidthCategory {
+  @apply w-[75rem];
 }
 
 .centered {
@@ -97,6 +101,7 @@ footer .list li {
   @apply px-5;
 }
 
-.sheesh{
-  @apply bg-red-500
+.sheesh {
+  @apply bg-red-500;
 }
+

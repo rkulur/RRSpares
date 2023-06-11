@@ -10,6 +10,7 @@ import Loading from "../components/Loading";
 import { useCheckAdmin } from "../Context/CheckIfAdminContext";
 import { GetRoleType } from "../components/Home/Header";
 import TriggerListEditedProvider from "../Context/TriggerListEditedContext";
+import AlertProvider from "../Context/AlertContext";
 
 export default function Admin() {
   const [isLoading, setIsLoading] = useState(false);
@@ -43,15 +44,17 @@ export default function Admin() {
         <Loading />
       ) : isAdmin ? (
         <>
-          <Navbar />
-          <DropDownContextProvider>
-            <PaginationProvider>
-              <TriggerListEditedProvider>
-                <Outlet />
-              </TriggerListEditedProvider>
-            </PaginationProvider>
-          </DropDownContextProvider>
-          <Footer />
+          <AlertProvider>
+            <Navbar />
+            <DropDownContextProvider>
+              <PaginationProvider>
+                <TriggerListEditedProvider>
+                  <Outlet />
+                </TriggerListEditedProvider>
+              </PaginationProvider>
+            </DropDownContextProvider>
+            <Footer />
+        </AlertProvider>
         </>
       ) : (
         <Unauthorized />
