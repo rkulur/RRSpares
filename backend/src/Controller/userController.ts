@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { UserModel, UserType } from "../Model";
+import { UserSchema, UserType } from "../Model";
 import bcrypt from "bcryptjs";
 import { sendToken } from "../Utils/token";
 import { UserRequest } from "../Interface/interface";
@@ -10,14 +10,14 @@ import { sendPasswordResetEmail } from "../Utils/handleEmail";
 export const registerUser = async (req: Request, res: Response) => {
 	try {
 		const { firstName, lastName, email, password }: UserType = req.body;
-		const isUserPresent = await UserModel.findOne({ email });
+		const isUserPresent = await UserSchema.findOne({ email });
 		if (isUserPresent) {
 			return errorHandler(res, 400, "User already exists!");
 		}
 
 		const salt = await bcrypt.genSalt(10);
-		const hashedPass = await bcrypt.hash(password, salt);
-		const user = await new UserModel({
+		const hashedPass = await bcrypt.hash(password!, salt);
+		const user = await new UserSchema({
 			firstName,
 			lastName,
 			email,
@@ -33,13 +33,13 @@ export const registerUser = async (req: Request, res: Response) => {
 // LOGIN
 export const loginUser = async (req: Request, res: Response) => {
 	try {
-		const { email, password }: UserType = req.body;
-		const currentUser = await UserModel.findOne({ email }).select("+password");
+		const { email, password } = req.body;
+		const currentUser = await UserSchema.findOne({ email }).select("+password");
 		if (!currentUser) {
 			return errorHandler(res, 404, "User not found!");
 		}
 
-		const comparePassword = await bcrypt.compare(password, currentUser.password);
+		const comparePassword = await bcrypt.compare(password, currentUser.password!);
 
 		if (!comparePassword) {
 			return errorHandler(res, 401, "Invalid credentials!");
@@ -56,9 +56,9 @@ export const initiateResetPassword = async (req: Request, res: Response) => {
 	try {
 		const { email }: UserType = req.body;
 
-		const isEmailValid = await UserModel.findOne({ email });
+		const isEmailValid = await UserSchema.findOne({ email });
 
-		if (!isEmailValid) {
+		if (!isEmailValid || !email) {
 			return errorHandler(res, 401, "Invalid Email!");
 		}
 
@@ -86,7 +86,7 @@ export const resetPassword = async (req: Request, res: Response) => {
 
 		const salt = await bcrypt.genSalt(10);
 		const hashedPass = await bcrypt.hash(password, salt);
-		await UserModel.findByIdAndUpdate(resetUserId, { $set: { password: hashedPass } }, { new: true });
+		await UserSchema.findByIdAndUpdate(resetUserId, { $set: { password: hashedPass } }, { new: true });
 		successHandler(res, 200, "Password reset successfully!");
 	} catch (err: any) {
 		errorHandler(err, 500, err.message);
@@ -101,7 +101,7 @@ export const getUserDetails = async (req: UserRequest, res: Response) => {
 	}
 
 	try {
-		const user = await UserModel.findById(id);
+		const user = await UserSchema.findById(id);
 		const userDetails = { firstName: user?.firstName, lastName: user?.lastName, email: user?.email };
 		successHandler(res, 200, "User details fetched successfully!", { userDetails });
 	} catch (error: any) {
@@ -122,7 +122,7 @@ export const updateUserDetails = async (req: UserRequest, res: Response) => {
 		} else {
 			fieldsToUpdate.email = email;
 		}
-		const updatedUser = await UserModel.findByIdAndUpdate({ _id: id }, { $set: fieldsToUpdate }, { new: true });
+		const updatedUser = await UserSchema.findByIdAndUpdate({ _id: id }, { $set: fieldsToUpdate }, { new: true });
 
 		successHandler(res, 200, `User updated successfully!`, { updatedUser });
 	} catch (error: any) {

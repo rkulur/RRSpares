@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import fs from "fs";
-import BrandModel from "../Model/categories/brand";
+import BrandSchema from "../Model/categories/brand";
 import { errorHandler } from "../Utils/errorHandler";
 import { successHandler } from "../Utils/errorHandler";
 import { bucket } from "../cloud/cloudInitialization";
@@ -21,7 +21,7 @@ export const addBrand = async (req: Request, res: Response) => {
 			return errorHandler(res, 404, "Missing required fields");
 		}
 
-		const searchBrand = await BrandModel.find({ name }); // returns array
+		const searchBrand = await BrandSchema.find({ name }); // returns array
 		console.log(searchBrand.entries())
 		const brandPresent = searchBrand.length >= 1;
 		if (brandPresent) {
@@ -29,8 +29,9 @@ export const addBrand = async (req: Request, res: Response) => {
 		}
 
 		const uploadOptions = cloudUploadOptions(`brands/${logo.filename}`, logo.mimetype);
-		const fileSrc = await uploadFileToCloud(res, logo, bucket, uploadOptions);
-		const addedBrand = await new BrandModel({
+		const resizeOptions = {height : 100, width : 100}
+		const fileSrc = await uploadFileToCloud(res, logo, bucket, uploadOptions,resizeOptions);
+		const addedBrand = await new BrandSchema({
 			name,
 			logo: fileSrc,
 			description,
@@ -47,7 +48,7 @@ export const addBrand = async (req: Request, res: Response) => {
 // GET BRANDS
 export const getAllBrands = async (req: Request, res: Response) => {
 	try {
-		const brands = await BrandModel.find();
+		const brands = await BrandSchema.find();
 		successHandler(res, 200, "Brand fetched successfully", { brands });
 	} catch (error: any) {
 		console.log(error.message, error.stack);
@@ -59,7 +60,7 @@ export const getAllBrands = async (req: Request, res: Response) => {
 export const getBrandById = async (req: Request, res: Response) => {
 	const brandId = req.params.id;
 	try {
-		const brand = await BrandModel.findById(brandId);
+		const brand = await BrandSchema.findById(brandId);
 		if (!brand) {
 			return errorHandler(res, 404, "Brand not found");
 		}
@@ -76,7 +77,7 @@ export const editBrand = async (req: Request, res: Response) => {
 		const logo = req.file;
 		const brandId = req.params.id;
 
-		const brand = await BrandModel.findById(brandId);
+		const brand = await BrandSchema.findById(brandId);
 		if (!brand) {
 			return errorHandler(res, 404, "Brand not found");
 		}
@@ -106,12 +107,14 @@ export const editBrand = async (req: Request, res: Response) => {
 		// Updating the logo in cloud
 		if (!isLogoMatched && logo) {
 			const uploadOptions = cloudUploadOptions(`brands/${logo.filename}`, logo.mimetype);
+			const resizeOptions = {height : 100, width : 100};
 			const { fileSrc, isDeleted } = await updateCloudFile(
 				res,
 				logo,
 				brand.logo,
 				bucket,
-				uploadOptions
+				uploadOptions,
+				resizeOptions
 			);
 			if (!isDeleted) {
 				return errorHandler(res, 500, "An error occurred while attempting to edit the brand", {
@@ -121,7 +124,7 @@ export const editBrand = async (req: Request, res: Response) => {
 			fieldsToUpdate.logo = fileSrc;
 		}
 
-		const updatedBrand = await BrandModel.findByIdAndUpdate(
+		const updatedBrand = await BrandSchema.findByIdAndUpdate(
 			brandId,
 			{ $set: fieldsToUpdate },
 			{ new: true, runValidators: true }
@@ -141,7 +144,7 @@ export const editBrand = async (req: Request, res: Response) => {
 export const deleteBrand = async (req: Request, res: Response) => {
 	try {
 		const brandId = req.params.id;
-		const brand = await BrandModel.findById(brandId);
+		const brand = await BrandSchema.findById(brandId);
 
 		if (!brand) {
 			return errorHandler(res, 404, "Brand not found");

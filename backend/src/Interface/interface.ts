@@ -12,3 +12,10 @@ export interface UploadOptions {
 		contentType: string;
 	};
 }
+
+export interface ImageResize {
+	imagePath: string;
+	height: number;
+	width: number;
+	resizedImagePath : string
+}

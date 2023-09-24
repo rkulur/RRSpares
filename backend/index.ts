@@ -5,6 +5,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import { categoryRoutes, userRoutes } from "./src/Routes";
+import resizeImage from "./src/imageOptmization/resize";
 
 const app = express();
 

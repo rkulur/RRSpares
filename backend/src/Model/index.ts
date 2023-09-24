@@ -1,7 +1,9 @@
-import UserModel from "./user";
+import UserSchema from "./user";
 import { UserType } from "./user";
-import BrandModel from "./categories/brand";
+import BrandSchema from "./categories/brand";
 import { BrandType } from "./categories/brand";
+import ModelSchema from "./categories/model";
+import { ModelType } from "./categories/model";
 
-export { UserModel,BrandModel}
-export { UserType, BrandType}
+export { UserSchema, BrandSchema, ModelSchema };
+export { UserType, BrandType, ModelType };
