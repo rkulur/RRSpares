@@ -37,7 +37,8 @@ export default function Login() {
         console.log("change");
 
         if (res.data.success) {
-          navigate("/account/profile", {
+          console.log(location.state && location.state.from && location.state.from.pathname)
+          navigate('/account/profile', {
             state: { from: location },
             replace: true,
           });

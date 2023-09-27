@@ -7,8 +7,7 @@ import Layout from "./components/Layout";
 import Reset from "./Pages/Reset";
 import ResetPassword from "./Pages/ResetPassword";
 import Admin from "./Pages/Admin";
-import { Dashboard, BrandCategory, Users } from "./components/Admin";
-import ModelCategory from "./components/Admin/Categories/ModelCategory";
+import { Dashboard, BrandCategory, Users, ModelCategory } from "./components/Admin";
 
 function App() {
   return (

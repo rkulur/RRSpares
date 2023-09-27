@@ -11,6 +11,8 @@ import { useCheckAdmin } from "../Context/CheckIfAdminContext";
 import { GetRoleType } from "../components/Home/Header";
 import TriggerListEditedProvider from "../Context/TriggerListEditedContext";
 import AlertProvider from "../Context/AlertContext";
+import SelectBrandContextProvider from "../Context/SelectBrandContext";
+import BrandProvider from "../components/Admin/Categories/ModelCategory/GetBrandsContext";
 
 export default function Admin() {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,15 +48,19 @@ export default function Admin() {
         <>
           <AlertProvider>
             <Navbar />
+            <BrandProvider>
             <DropDownContextProvider>
               <PaginationProvider>
                 <TriggerListEditedProvider>
-                  <Outlet />
+                  <SelectBrandContextProvider>
+                    <Outlet />
+                  </SelectBrandContextProvider>
                 </TriggerListEditedProvider>
               </PaginationProvider>
             </DropDownContextProvider>
+            </BrandProvider>
             <Footer />
-        </AlertProvider>
+          </AlertProvider>
         </>
       ) : (
         <Unauthorized />

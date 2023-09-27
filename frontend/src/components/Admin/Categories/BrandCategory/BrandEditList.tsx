@@ -93,11 +93,11 @@ export default function BrandEditList({ brand, setEnableEdit, setTriggerLoader }
     <>
       <div className="h-16 flex flex-col items-center gap-1">
         <div className="h-10 w-10 flex flex-col items-center justify-center rounded-full shadow-inner bg-slate-300/20 relative">
-          {logoImgToEdit ? (
-            <img className="object-contain h-full w-full" src={URL.createObjectURL(logoImgToEdit)} alt="" />
-          ) : (
-            <img className="object-contain h-full w-full" src={brand.logo} alt="" />
-          )}
+          <img
+            className="object-contain h-full w-full"
+            src={logoImgToEdit ? URL.createObjectURL(logoImgToEdit) : brand.logo}
+            alt=""
+          />
         </div>
         <input
           className="text-[.5rem] border outline-blue-800/20 rounded-full hidden"

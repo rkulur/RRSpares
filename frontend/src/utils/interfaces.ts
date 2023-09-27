@@ -82,8 +82,24 @@ export interface BrandType {
   _id: string;
 }
 
+export interface ModelType {
+  name: string;
+  brandId: string;
+  modelImg: string;
+  description: string;
+  variants: string[];
+  _id: string;
+  brand : BrandType
+}
+
 export interface BrandResType extends ResType {
   brand: BrandType;
+  brands ?: BrandType[];
+}
+
+export interface ModelResType extends ResType {
+  model: ModelType;
+  models : ModelType[];
 }
 
 export type StateWithIdxType = {
@@ -96,3 +112,15 @@ export interface Alert {
   type: "success" | "error";
   message: string;
 }
+
+export type BrandSelect = {
+  logo: string;
+  name: string;
+};
+
+export type SelectOptionType = {
+  value: string;
+  label: string;
+  image: string;
+  id : string
+};

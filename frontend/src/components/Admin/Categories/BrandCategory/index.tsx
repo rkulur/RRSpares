@@ -1,12 +1,11 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { Alert, BrandType } from "../../../../utils/interfaces";
+import { BrandType } from "../../../../utils/interfaces";
 import BrandList from "./BrandList";
 import { useTriggerEditContext } from "../../../../Context/TriggerListEditedContext";
 import AddBrandForm from "./AddBrandForm";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import BrandLoader from "./BrandLoader";
-import AlertComponent from "../../Alert";
+import BrandLoader from "../../BrandLoader";
 
 
 export default function BrandCategory() {
@@ -36,9 +35,6 @@ export default function BrandCategory() {
 
   return (
     <main className="flex flex-col items-center mt-10 relative">
-      {
-        // alert.state && <AlertComponent {...alert} resetTrigger={setAlert}/>
-      }
       <section className="defWidthCategory grid grid-cols-[38%_60%] gap-6">
         <div>
           <AddBrandForm setBrandAdded={setBrandAdded} setTriggerLoader={setTriggerLoader}/>
