@@ -37,8 +37,8 @@ export default function Login() {
         console.log("change");
 
         if (res.data.success) {
-          console.log(location.state && location.state.from && location.state.from.pathname)
-          navigate('/account/profile', {
+          console.log(location.state && location.state.from && location.state.from.pathname);
+          navigate("/account/profile", {
             state: { from: location },
             replace: true,
           });
@@ -55,6 +55,8 @@ export default function Login() {
             required
             className="pl-8 py-3 px-4 outline-orange-400 transition-all "
             placeholder="Enter email "
+            name="email"
+            id="email"
             ref={email}
           />
           <div className="relative">
@@ -71,6 +73,8 @@ export default function Login() {
               className={` pl-8 py-3 px-4 outline-orange-400 w-full`}
               placeholder="Enter password "
               ref={password}
+              name="password"
+              id="password"
               required
               min={8}
             />

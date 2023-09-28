@@ -49,15 +49,15 @@ export default function Admin() {
           <AlertProvider>
             <Navbar />
             <BrandProvider>
-            <DropDownContextProvider>
-              <PaginationProvider>
-                <TriggerListEditedProvider>
-                  <SelectBrandContextProvider>
-                    <Outlet />
-                  </SelectBrandContextProvider>
-                </TriggerListEditedProvider>
-              </PaginationProvider>
-            </DropDownContextProvider>
+              <DropDownContextProvider>
+                <PaginationProvider>
+                  <TriggerListEditedProvider>
+                    <SelectBrandContextProvider>
+                      <Outlet />
+                    </SelectBrandContextProvider>
+                  </TriggerListEditedProvider>
+                </PaginationProvider>
+              </DropDownContextProvider>
             </BrandProvider>
             <Footer />
           </AlertProvider>

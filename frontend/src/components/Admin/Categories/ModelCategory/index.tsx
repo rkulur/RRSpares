@@ -58,6 +58,6 @@ export default function ModelCategory() {
           )}
         </div>
       </section>
-    </main>
+  </main>
   );
 }

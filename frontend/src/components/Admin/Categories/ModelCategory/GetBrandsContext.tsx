@@ -14,6 +14,7 @@ export default function BrandProvider({ children }: ChildrenType) {
       value: "",
       label: "",
       image: "",
+      id : ""
     },
   ]);
 

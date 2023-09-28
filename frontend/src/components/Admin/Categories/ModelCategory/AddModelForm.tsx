@@ -151,7 +151,7 @@ export default function AddModelForm({ setModelAdded, setTriggerLoader }: AddBra
         <input
           className="border px-3 py-2 bg-orange-400 text-white rounded-md active:scale-[.98] outline-blue-800"
           type="submit"
-          value={"Add Brand"}
+          value={"Add Model"}
         />
       </form>
     </div>

@@ -71,7 +71,7 @@ export default function ModelList({ models, head, setModelDeleted, setTriggerLoa
 
   const listFunctionality = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    function handleListFunctionality(e: Event) {
+    function handleOutsideListClick(e: Event) {
       if (listFunctionality.current && !listFunctionality.current.contains(e.target as Node)) {
         setTriggerMenu((prev) => {
           return {
@@ -81,9 +81,9 @@ export default function ModelList({ models, head, setModelDeleted, setTriggerLoa
         });
       }
     }
-    document.addEventListener("mousedown", handleListFunctionality);
+    document.addEventListener("mousedown", handleOutsideListClick);
     return () => {
-      document.removeEventListener("mousedown", handleListFunctionality);
+      document.removeEventListener("mousedown", handleOutsideListClick);
     };
   }, [enableEdit]);
 

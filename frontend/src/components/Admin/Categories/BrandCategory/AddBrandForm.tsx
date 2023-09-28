@@ -39,7 +39,7 @@ export default function AddBrandForm({ setBrandAdded, setTriggerLoader }: AddBra
     description.current && (description.current.value = "");
     countryOfOrigin.current && (countryOfOrigin.current.value = "");
     logo.current && (logo.current.value = "");
-    setSelectedImg(null)
+    setSelectedImg(null);
 
     axios
       .post<ResType, AxiosResponse<ResType>>(`${import.meta.env.VITE_SERVER_URL}/categories/brand`, formData, {

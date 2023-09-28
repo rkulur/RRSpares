@@ -124,3 +124,9 @@ export type SelectOptionType = {
   image: string;
   id : string
 };
+
+export type PartCategoryType = {
+  _id : string,
+  categoryName : string;
+}
+
