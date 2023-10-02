@@ -7,8 +7,8 @@ import axios from "axios";
 import resizeImage from "../imageOptmization/resize";
 
 interface ImageResizeOptions {
-	height : number, 
-	width : number
+	height: number;
+	width: number;
 }
 
 async function uploadFileToCloud(
@@ -16,15 +16,20 @@ async function uploadFileToCloud(
 	file: Express.Multer.File,
 	bucket: Bucket,
 	uploadOptions: UploadOptions,
-	resizeOptions ?: ImageResizeOptions
+	resizeOptions?: ImageResizeOptions
 ) {
 	return new Promise<string>(async (resolve, reject) => {
 		let filePath = file.path;
-		if(resizeOptions){
-			const folderpath = file.path.split('\\')
-			const resizedPath = await resizeImage({imagePath : file.path, height : resizeOptions.height, width : resizeOptions.width, resizedImagePath : `${folderpath.slice(0, folderpath.length - 1)}`})
-			filePath = resizedPath
-			console.log('path' , filePath)
+		if (resizeOptions) {
+			const folderpath = file.path.split("\\");
+			const resizedPath = await resizeImage({
+				imagePath: file.path,
+				height: resizeOptions.height,
+				width: resizeOptions.width,
+				resizedImagePath: `${folderpath.slice(0, folderpath.length - 1)}`,
+			});
+			filePath = resizedPath;
+			console.log("path", filePath);
 		}
 		bucket.upload(filePath, uploadOptions, async (err, uploadedFile) => {
 			if (err) {
@@ -32,14 +37,14 @@ async function uploadFileToCloud(
 			}
 			await uploadedFile?.makePublic();
 			const fileUrl = uploadedFile?.publicUrl();
-			console.log('path inside : ', filePath)
-			console.log(fileUrl)
+			console.log("path inside : ", filePath);
+			console.log(fileUrl);
 
 			if (!fileUrl) {
 				reject(new Error("Error while retrieving fileUrl"));
 				return;
 			}
-			resizeOptions && fs.unlinkSync(file.path)
+			resizeOptions && fs.unlinkSync(file.path);
 			fs.unlinkSync(filePath); // removing the file from upload directory
 			resolve(fileUrl);
 		});
@@ -70,7 +75,10 @@ async function compareCloudFile(reqFile: Express.Multer.File, compareFilePath: s
 
 async function deleteCloudFile(filePath: string, bucket: Bucket) {
 	return new Promise<boolean>(async (resolve, reject) => {
-		const pathInStorage = filePath.replace(`https://storage.googleapis.com/${process.env.STORAGE_BUCKET_NAME}/`, ""); // Removing the unnecessary prefix from url
+		const pathInStorage = filePath.replace(
+			`https://storage.googleapis.com/${process.env.STORAGE_BUCKET_NAME}/`,
+			""
+		); // Removing the unnecessary prefix from url
 		const pathInStorage_DECODED = decodeURIComponent(pathInStorage);
 		const file = bucket.file(pathInStorage_DECODED);
 
@@ -85,6 +93,7 @@ async function deleteCloudFile(filePath: string, bucket: Bucket) {
 	});
 }
 
+// Should be refactored......
 async function updateCloudFile(res: Response, file: Express.Multer.File,filePathInStorage : string, bucket: Bucket, uploadOptions: UploadOptions, resizeOptions ?: {height : number, width : number}) {
 	const fileSrc = await uploadFileToCloud(res, file, bucket, uploadOptions,resizeOptions);
 	const isDeleted = await deleteCloudFile(filePathInStorage, bucket);
@@ -93,6 +102,66 @@ async function updateCloudFile(res: Response, file: Express.Multer.File,filePath
 		isDeleted,
 	};
 }
+
+// async function updateCloudFile(
+// 	res: Response,
+// 	file: Express.Multer.File,
+// 	filePathInStorage: string,
+// 	bucket: Bucket,
+// 	uploadOptions: UploadOptions,
+// 	resizeOptions?: { height: number; width: number }
+// ) {
+// 	let filePath = file.path;
+// 	return new Promise<{ fileSrc: string; isDeleted: boolean }>(async (resolve, reject) => {
+// 		if (resizeOptions) {
+// 			const folderpath = file.path.split("\\");
+// 			const resizedPath = await resizeImage({
+// 				imagePath: file.path,
+// 				height: resizeOptions.height,
+// 				width: resizeOptions.width,
+// 				resizedImagePath: `${folderpath.slice(0, folderpath.length - 1)}`,
+// 			});
+// 			filePath = resizedPath;
+// 			console.log("path", filePath);
+// 		}
+// 		bucket.upload(filePath, uploadOptions, async (err, uploadedFile) => {
+// 			try {
+// 				if (err) {
+// 					reject(err);
+// 				}
+// 				await uploadedFile?.makePublic();
+// 				const fileUrl = uploadedFile?.publicUrl();
+// 				console.log("path inside : ", filePath);
+// 				console.log(fileUrl);
+
+// 				if (!fileUrl) {
+// 					reject(new Error("Error while retrieving fileUrl"));
+// 					return;
+// 				}
+// 				resizeOptions && fs.unlinkSync(file.path);
+// 				fs.unlinkSync(filePath); // removing the file from upload directory
+
+// 				const pathInStorage = filePath.replace(
+// 					`https://storage.googleapis.com/${process.env.STORAGE_BUCKET_NAME}/`,
+// 					""
+// 				); // Removing the unnecessary prefix from url
+// 				const pathInStorage_DECODED = decodeURIComponent(pathInStorage);
+// 				const fileToDelete = bucket.file(pathInStorage_DECODED);
+// 				await fileToDelete.delete();
+// 				console.log("file deleted");
+
+// 				resolve({
+// 					fileSrc: fileUrl,
+// 					isDeleted: true,
+// 				});
+
+// 			} catch (err) {
+// 				console.log(err)
+// 				reject(err);
+// 			}
+// 		});
+// 	});
+// }
 
 function cloudUploadOptions(destination: string, contentType: string) {
 	return {
@@ -103,4 +172,10 @@ function cloudUploadOptions(destination: string, contentType: string) {
 	};
 }
 
-export { uploadFileToCloud, compareCloudFile, deleteCloudFile, updateCloudFile, cloudUploadOptions };
+export {
+	uploadFileToCloud,
+	compareCloudFile,
+	deleteCloudFile,
+	updateCloudFile,
+	cloudUploadOptions,
+};

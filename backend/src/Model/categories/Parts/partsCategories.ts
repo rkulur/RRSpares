@@ -9,6 +9,6 @@ const PartsCategorySchema = new Schema({
 
 export type PartsCategoryType = InferSchemaType<typeof PartsCategorySchema>
 
-const PartsCategoryModel = mongoose.model<PartsCategoryType>("PartsCategoryModel", PartsCategorySchema)
+const PartsCategoryModel = mongoose.model<PartsCategoryType>("PartsCategory", PartsCategorySchema)
 
 export default PartsCategoryModel

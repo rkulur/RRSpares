@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import fs from "fs";
 import { BrandSchema, ModelSchema } from "../Model";
 import { errorHandler } from "../Utils/errorHandler";
 import { successHandler } from "../Utils/errorHandler";
@@ -7,11 +6,10 @@ import { bucket } from "../cloud/cloudInitialization";
 import {
 	uploadFileToCloud,
 	cloudUploadOptions,
-	compareCloudFile,
 	updateCloudFile,
 	deleteCloudFile,
 } from "../cloud/cloudOperations";
-import { Mongoose, Schema } from "mongoose";
+import { Schema } from "mongoose";
 
 
 // ADD MODEL

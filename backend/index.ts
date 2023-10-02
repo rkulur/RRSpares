@@ -4,8 +4,7 @@ import { connectDatabase } from "./src/db";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
-import { categoryRoutes, userRoutes } from "./src/Routes";
-import resizeImage from "./src/imageOptmization/resize";
+import { categoryRoutes, productRoutes, userRoutes } from "./src/Routes";
 
 const app = express();
 
@@ -25,6 +24,7 @@ app.use(
 // Routes
 app.use("/account", userRoutes);
 app.use("/categories", categoryRoutes);
+app.use("/products", productRoutes);
 
 const port = process.env.PORT;
 app.listen(port, () => {
