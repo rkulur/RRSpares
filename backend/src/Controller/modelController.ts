@@ -34,7 +34,7 @@ export const addModel = async (req: Request, res: Response) => {
 
 		const uploadOptions = cloudUploadOptions(`models/${modelImg.filename}`, modelImg.mimetype);
 		const resizeOptions = {height : 100, width : 100}
-		const fileSrc = await uploadFileToCloud(res, modelImg, bucket, uploadOptions, resizeOptions);
+		const fileSrc = await uploadFileToCloud( modelImg, bucket, uploadOptions, resizeOptions);
 
 		const variantsInArr = variants.split(',');
 		console.log(variantsInArr)
@@ -114,7 +114,6 @@ export const editModel = async (req: Request, res: Response) => {
 		if (modelImg) {
 			const uploadOptions = cloudUploadOptions(`models/${modelImg.filename}`, modelImg.mimetype);
 			const { fileSrc, isDeleted } = await updateCloudFile(
-				res,
 				modelImg,
 				Model.modelImg,
 				bucket,

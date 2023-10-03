@@ -30,7 +30,7 @@ export const addBrand = async (req: Request, res: Response) => {
 
 		const uploadOptions = cloudUploadOptions(`brands/${logo.filename}`, logo.mimetype);
 		const resizeOptions = {height : 100, width : 100}
-		const fileSrc = await uploadFileToCloud(res, logo, bucket, uploadOptions,resizeOptions);
+		const fileSrc = await uploadFileToCloud(logo, bucket, uploadOptions,resizeOptions);
 		const addedBrand = await new BrandSchema({
 			name,
 			logo: fileSrc,
@@ -109,7 +109,6 @@ export const editBrand = async (req: Request, res: Response) => {
 			const uploadOptions = cloudUploadOptions(`brands/${logo.filename}`, logo.mimetype);
 			const resizeOptions = {height : 100, width : 100};
 			const { fileSrc, isDeleted } = await updateCloudFile(
-				res,
 				logo,
 				brand.logo,
 				bucket,

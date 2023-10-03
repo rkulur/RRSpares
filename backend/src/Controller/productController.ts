@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { errorHandler, successHandler } from "../Utils/errorHandler";
 import { BrandSchema, ModelSchema, PartsCategorySchema, ProductSchema } from "../Model";
+import { cloudUploadOptions, uploadMultipleFilesToCloud } from "../cloud/cloudOperations";
+import { bucket } from "../cloud/cloudInitialization";
 
 export const addProduct = async (req: Request, res: Response) => {
 	try {
@@ -15,8 +17,7 @@ export const addProduct = async (req: Request, res: Response) => {
 			pBrand,
 		} = req.body;
 		
-		const pImages = req.files;
-		console.log(pImages)
+		const imageFiles = req.files;
 
 		if (!(await BrandSchema.findById(pBrand))) {
 			errorHandler(res, 403, "Invalid Brand Id");
@@ -32,6 +33,11 @@ export const addProduct = async (req: Request, res: Response) => {
 			errorHandler(res, 403, "Invalid category Id");
 			return;
 		}
+	
+		// Uploading images to cloud
+
+
+		const pImages = await uploadMultipleFilesToCloud(imageFiles,bucket)
 
 		const addedProduct = await new ProductSchema({
 			pName,
@@ -93,7 +99,6 @@ export const editProduct = async (req: Request, res: Response) => {
 			pBrand,
 		} = req.body;
 		const pImages = req.files;
-		console.log(req.file)
 		const fieldsToUpdate = {
 			pName,
 			pColor,

@@ -13,7 +13,7 @@ router.route("/")
 router.route("/:id")
     .get(auth, checkIfAdmin, getProductById)
     .delete(auth, checkIfAdmin, deleteProduct)
-    .put(auth, checkIfAdmin, editProduct)
+    .put(auth, checkIfAdmin,upload.array("pImages"), editProduct)
     
 
 export { router };
